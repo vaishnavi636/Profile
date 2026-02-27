@@ -4,21 +4,13 @@ service cloud.firestore {
 
     function signedIn() { return request.auth != null; }
     function isAdmin() {
-      return signedIn() && request.auth.uid == "AqEYqLBvpySAMZTnCsF6ns6rDyf2";
+      return signedIn() && request.auth.uid == "IX8dJujmBvTwFh4PT2hEIXI3JlA2";
     }
 
     match /accessRequests/{uid} {
       allow create: if signedIn() && request.auth.uid == uid;
-
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
-
-      // ✅ user can update ONLY safe fields (for renew message flow)
-      allow update: if isAdmin() ||
-        (signedIn() && request.auth.uid == uid &&
-          request.resource.data.diff(resource.data).changedKeys()
-            .hasOnly(["message", "updatedAt", "requestedAt"])
-        );
-
+      allow update: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow delete: if isAdmin();
     }
 
@@ -28,13 +20,43 @@ service cloud.firestore {
     }
 
     match /accessGrants/{uid} {
-      // ✅ user reads own, admin reads all (needed for Admin panel stats)
-      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      // user can read their own grant
+allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      // admin can create/reset grants
+      allow create, delete: if isAdmin();
 
-      // only admin can grant/reset/consume updates through your admin actions
-      allow create, update, delete: if isAdmin();
+      // user can "consume" views in a controlled way; admin can reset
+      allow update: if
+        isAdmin() ||
+        (
+          signedIn() &&
+          request.auth.uid == uid &&
+
+          // must not add new unexpected fields
+          request.resource.data.keys().hasOnly([
+            "remainingViews",
+            "totalViewsConsumed",
+            "lastViewedAt"
+          ]) &&
+
+          // remainingViews can only go down by 1 (or stay same in rare retries)
+          request.resource.data.remainingViews is int &&
+          resource.data.remainingViews is int &&
+          request.resource.data.remainingViews <= resource.data.remainingViews &&
+          (resource.data.remainingViews - request.resource.data.remainingViews) <= 1 &&
+
+          // totalViewsConsumed can only go up by 1 (or stay same in retries)
+          request.resource.data.totalViewsConsumed is int &&
+          resource.data.totalViewsConsumed is int &&
+          request.resource.data.totalViewsConsumed >= resource.data.totalViewsConsumed &&
+          (request.resource.data.totalViewsConsumed - resource.data.totalViewsConsumed) <= 1 &&
+
+          // lastViewedAt must exist and be int
+          request.resource.data.lastViewedAt is int
+        );
     }
 
+    // Optional: keep if you already use it
     match /privateContent/{docId} {
       allow read: if signedIn() &&
         exists(/databases/$(database)/documents/approvedUsers/$(request.auth.uid));

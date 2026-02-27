@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import Signup from "../pages/Signup";
 import Login from "../pages/Login";
 import Waiting from "../pages/Waiting";
+import Profile from "../pages/Profile";
 import Admin from "../pages/Admin";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
 
-import { RequireAuth, RequireApproved } from "./guards";
+import { RequireAuth, RequireApproved, RequireProfileView } from "./guards";
 import { useAuth } from "../contexts/AuthContext";
 import { getApprovalDoc } from "../services/accessRequests";
 import Loading from "../components/Loading";
@@ -66,7 +67,6 @@ export default function AppRoutes() {
         }
       />
 
-      {/* ✅ One landing page */}
       <Route
         path="/home"
         element={
@@ -76,7 +76,16 @@ export default function AppRoutes() {
         }
       />
 
-      {/* ✅ Admin route exists but UI hides link for non-admin */}
+      {/* ✅ Profile is protected by view-counter */}
+      <Route
+        path="/profile"
+        element={
+          <RequireProfileView>
+            <Profile />
+          </RequireProfileView>
+        }
+      />
+
       <Route
         path="/admin"
         element={

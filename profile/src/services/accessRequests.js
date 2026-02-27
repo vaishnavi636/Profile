@@ -105,7 +105,7 @@ export async function approveUser(uid, email) {
   );
 
   // ✅ resets to EXACTLY 2, not +2
-  await grantViews(uid, 2, ADMIN_UID);
+  await grantViews(uid, 2);
 }
 
 /**

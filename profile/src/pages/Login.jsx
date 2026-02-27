@@ -18,9 +18,7 @@ export default function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-
-      // ✅ Always go to "/" so IndexRedirect decides:
-      // -> /waiting or /home
+      // ✅ Let IndexRedirect decide where to go
       navigate("/", { replace: true });
     } catch (err) {
       setError(err?.message || "Login failed");
@@ -35,20 +33,10 @@ export default function Login() {
         <h1>Login</h1>
 
         <label>Email</label>
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="email"
-          required
-        />
+        <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
 
         <label>Password</label>
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          required
-        />
+        <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required />
 
         <button disabled={busy}>{busy ? "Signing in..." : "Login"}</button>
 

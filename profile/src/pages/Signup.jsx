@@ -20,14 +20,12 @@ export default function Signup() {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-      // Send verification email
       await sendEmailVerification(cred.user);
 
-      // Create access request as PENDING (INITIAL)
+      // ✅ FIX: use cred.user (not "user")
       await createOrUpdateInitialRequest(cred.user.uid, cred.user.email);
 
-      // Go to waiting page
-      navigate("/waiting", { replace: true });
+      navigate("/waiting");
     } catch (err) {
       setError(err?.message || "Signup failed");
     } finally {
@@ -44,20 +42,10 @@ export default function Signup() {
         </p>
 
         <label>Email</label>
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="email"
-          required
-        />
+        <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
 
         <label>Password</label>
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          required
-        />
+        <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required />
 
         <button disabled={busy}>{busy ? "Creating..." : "Create account"}</button>
 

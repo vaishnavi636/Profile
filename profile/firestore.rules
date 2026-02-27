@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() && request.auth.uid == "AqEYqLBvpySAMZTnCsF6ns6rDyf2";
+    }
+
+    match /accessRequests/{uid} {
+      allow create: if signedIn() && request.auth.uid == uid;
+
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+
+      // ✅ user can update ONLY safe fields (for renew message flow)
+      allow update: if isAdmin() ||
+        (signedIn() && request.auth.uid == uid &&
+          request.resource.data.diff(resource.data).changedKeys()
+            .hasOnly(["message", "updatedAt", "requestedAt"])
+        );
+
+      allow delete: if isAdmin();
+    }
+
+    match /approvedUsers/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /accessGrants/{uid} {
+      // ✅ user reads own, admin reads all (needed for Admin panel stats)
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+
+      // only admin can grant/reset/consume updates through your admin actions
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /privateContent/{docId} {
+      allow read: if signedIn() &&
+        exists(/databases/$(database)/documents/approvedUsers/$(request.auth.uid));
+      allow write: if isAdmin();
+    }
+  }
+}

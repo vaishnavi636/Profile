@@ -14,6 +14,9 @@ import { useAuth } from "../contexts/AuthContext";
 import { getApprovalDoc } from "../services/accessRequests";
 import Loading from "../components/Loading";
 
+import ProfileAssetsUploader from "../admin/ProfileAssetsUploader";
+import ProfileDataSeeder from "../admin/ProfileDataSeeder";
+
 function IndexRedirect() {
   const { user, authLoading } = useAuth();
   const [checking, setChecking] = useState(true);
@@ -76,6 +79,8 @@ export default function AppRoutes() {
         }
       />
 
+      <Route path="/admin/profile-assets-uploader" element={<ProfileAssetsUploader />} />
+       <Route path="/admin/profile-seeder" element={<ProfileDataSeeder />} />
       {/* ✅ Profile is protected by view-counter */}
       <Route
         path="/profile"

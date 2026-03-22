@@ -7,6 +7,7 @@ import { ADMIN_UID } from "../config/admin";
 
 import { getGrant } from "../services/grants";
 import { getApprovalDoc, requestRenewAccess } from "../services/accessRequests";
+import resumePdf from "../assets/Python_React_FullStackDeveloper_Vaishnavi_Sharma_918805785260.pdf";
 
 import "../styles/home.css";
 import appreciationImg from "../assets/appreciation.png"; 
@@ -42,7 +43,7 @@ export default function Home() {
   }, [user?.email]);
 
   
-  const RESUME_URL = "/resume/VaishnaviSharma_8805785260_CV.pdf";
+  const RESUME_URL = resumePdf;
 
   async function refresh() {
     if (!user) return;
@@ -179,6 +180,38 @@ export default function Home() {
             </div>
           )}
         </div>
+     
+     {/* here we want a pdf viewer of my resume  */}
+     {/* Resume Viewer Section */}
+    {/* Resume Viewer Section */}
+<div className="resumeSection">
+  <div className="resumeHeader">
+    <div>
+      <div className="resumeTitle">📄 My Resume</div>
+      <div className="resumeSub">Preview my professional resume below.</div>
+    </div>
+
+    <div className="resumeActions">
+      <a className="resumeBtn" href={RESUME_URL} target="_blank" rel="noreferrer">
+        Open in new tab ↗
+      </a>
+
+      <a className="resumeBtn resumeBtnDark" href={RESUME_URL} download>
+        ⬇ Download
+      </a>
+    </div>
+  </div>
+
+  <div className="resumeViewer">
+    <iframe
+      src={RESUME_URL}
+      title="Resume Viewer"
+      className="resumeIframe"
+    />
+  </div>
+</div>
+
+
 
         {/* Row 1: Appreciation + Showcase (same height) */}
       <div className="homeSectionone"> Comment </div>

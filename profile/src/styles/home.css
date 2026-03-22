@@ -364,3 +364,87 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================
+   Resume Section (Viewer)
+========================= */
+.resumeSection {
+  margin-top: 90px;
+  margin-bottom: 70px;
+}
+
+.resumeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.resumeTitle {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+}
+
+.resumeSub {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #666;
+}
+
+.resumeActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* small clean buttons for resume toolbar */
+.resumeBtn {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  color: #111;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.05s ease, box-shadow 0.15s ease;
+}
+
+.resumeBtn:hover {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+  transform: translateY(-1px);
+}
+
+.resumeBtnDark {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.resumeViewer {
+  height: 900px;
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  background: #fff;
+  box-shadow: 0 22px 70px rgba(0,0,0,0.10);
+}
+
+.resumeIframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .resumeViewer { height: 650px; }
+  .resumeTitle { font-size: 26px; }
+}
